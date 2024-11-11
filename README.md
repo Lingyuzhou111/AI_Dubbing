@@ -14,4 +14,3 @@ AI_Dubbing是一款适用于chatgpt-on-wechat项目的AI语音合成插件，通
 
 # 使用样例
 ![AI_Dubbing Example](https://github.com/user-attachments/assets/af37a5db-15fb-4f95-8557-bfd026bf8c9b)
-https://www.hhlqilongzhu.cn/api/resource/yuyin/AI1f2d65016b62857e547af0081a1a1f2b.mp3
