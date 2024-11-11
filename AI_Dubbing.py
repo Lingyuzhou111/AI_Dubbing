@@ -2,10 +2,11 @@
 import json
 import requests
 import plugins
-from bridge.context import ContextType
+from bridge.context import ContextType, EventContext
 from bridge.reply import Reply, ReplyType
 from common.log import logger
 from plugins import *
+from bridge.event import EventAction  
 
 @plugins.register(
     name="AI_Dubbing",
@@ -32,7 +33,7 @@ class AIDubbing(Plugin):
             "五条悟", "工藤新一", "毛利兰", "萧炎", "王者语音播报", 
             "柯南", "磊哥游戏", "那英", "赤井秀一", "叶修", "李泽言", 
             "秦彻", "姬小满", "两面宿傩(中)", "哆啦a梦", "小夫", "猪猪侠", 
-            "李佳琦", "K总", "狂魔哥""
+            "李佳琦", "K总", "狂魔哥"  
         ]
 
     def on_handle_context(self, e_context: EventContext):
@@ -43,11 +44,11 @@ class AIDubbing(Plugin):
             # 分割消息内容，提取角色名和要合成的内容
             try:
                 _, name_msg = content.split(":", 1)
-                name, msg = map(str.strip, name_msg.split(",", 1))
+                name, msg = map(str.strip, name_msg.split("+", 1))
             except ValueError:
                 reply = Reply()
                 reply.type = ReplyType.TEXT
-                reply.content = "请按照格式输入: 配音: 角色名, 内容"
+                reply.content = "请按照格式输入: 配音: 角色名+内容"
                 e_context["reply"] = reply
                 e_context.action = EventAction.BREAK_PASS
                 return
@@ -63,14 +64,14 @@ class AIDubbing(Plugin):
                 response = requests.post(url, data=params)
                 if response.status_code == 200:
                     result = response.json()
-                    if result['code'] == 200:
+                    if result.get('code') == 200:
                         reply = Reply()
                         reply.type = ReplyType.TEXT
-                        reply.content = f"合成成功！\n角色名: {result['name']}\n内容: {result['content']}\n音频链接: {result['url']}"
+                        reply.content = f"合成成功！\n角色名: {result.get('name')}\n内容: {result.get('content')}\n音频链接: {result.get('url')}"
                     else:
                         reply = Reply()
                         reply.type = ReplyType.TEXT
-                        reply.content = f"错误: {result['msg']}"
+                        reply.content = f"错误: {result.get('msg', '未知错误')}"
                 else:
                     reply = Reply()
                     reply.type = ReplyType.TEXT
@@ -85,8 +86,8 @@ class AIDubbing(Plugin):
 
     def get_help_text(self, **kwargs):
         roles = ", ".join(self.available_roles)
-        help_text = """AI配音合成
-***指令：输入【配音: 角色名称, 语音内容】来生成对应的AI合成音频。
+        help_text = f"""AI配音合成
+***指令：输入【配音: 角色名称+语音内容】来生成对应的AI合成音频。
 ***例如：配音: 工藤新一,你好,我是工藤新一,是一名高中生侦探。 
-***可用角色: {roles}"""
+***可用角色: {roles}"""  # 使用了f-string来格式化
         return help_text
