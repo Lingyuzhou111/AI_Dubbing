@@ -10,7 +10,7 @@ AI_Dubbing是一款适用于chatgpt-on-wechat项目的AI语音合成插件，通
 
 3.在微信机器人聊天窗口输入#scanp 命令扫描新插件是否已添加至插件列表
 
-4.输入#help AIReport查看帮助信息，返回相关帮助信息则表示插件安装成功。
+4.输入#help AI_Dubbing查看帮助信息，返回相关帮助信息则表示插件安装成功。
 
 # 使用样例
 ![AI_Dubbing Example](https://github.com/user-attachments/assets/af37a5db-15fb-4f95-8557-bfd026bf8c9b)
